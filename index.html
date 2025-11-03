@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>jy-converter</title>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    #app { height: 100%; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- Elm アプリ本体 -->
+  <script src="./elm.js"></script>
+
+  <!-- YAML ライブラリ（eemeli/yaml） -->
+  <script type="module">
+    import * as YAML from "https://cdn.jsdelivr.net/npm/yaml@2.5.1/browser/index.js";
+
+    const app = Elm.Main.init({ node: document.getElementById("app") });
+
+    // Elm -> JS: 変換リクエスト
+    app.ports.jsonToYaml.subscribe((jsonStr) => {
+      try {
+        const obj = JSON.parse(jsonStr);
+        const yaml = YAML.stringify(obj);
+        app.ports.onJsonToYaml.send(yaml);
+      } catch (e) {
+        app.ports.onError.send(formatError("JSON parse/convert", e));
+      }
+    });
+
+    app.ports.yamlToJson.subscribe((yamlStr) => {
+      try {
+        const obj = YAML.parse(yamlStr);
+        const json = JSON.stringify(obj, null, 2);
+        app.ports.onYamlToJson.send(json);
+      } catch (e) {
+        app.ports.onError.send(formatError("YAML parse/convert", e));
+      }
+    });
+
+    // Elm -> JS: クリップボードコピー
+    app.ports.copyToClipboard.subscribe(async (text) => {
+      try {
+        await navigator.clipboard.writeText(text || "");
+        // 通知はUI側で楽観的に表示してるので、ここでは何もしない
+      } catch (e) {
+        app.ports.onError.send("Failed to copy to clipboard.");
+      }
+    });
+
+    function formatError(context, e) {
+      if (!e) return `${context} error.`;
+      // eemeli/yaml は pos/line/col を持つことがある
+      const loc = (e.line != null && e.col != null) ? ` (line ${e.line}, col ${e.col})` : "";
+      return `${context} error${loc}: ${e.message || String(e)}`;
+    }
+  </script>
+</body>
+</html>
