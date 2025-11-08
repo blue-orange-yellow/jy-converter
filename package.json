@@ -1,0 +1,28 @@
+{
+  "name": "jy-converter",
+  "version": "1.0.0",
+  "description": "JSON to YAML, YAML to JSON converting tool.",
+  "main": "elm.js",
+  "scripts": {
+    "tauri": "tauri",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "build:elm": "elm make src/Main.elm --output=elm.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blue-orange-yellow/jy-converter.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blue-orange-yellow/jy-converter/issues"
+  },
+  "homepage": "https://github.com/blue-orange-yellow/jy-converter#readme",
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.9.3",
+    "yaml": "^2.8.1"
+  }
+}

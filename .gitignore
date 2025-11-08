@@ -2,3 +2,7 @@
 elm-stuff
 # elm-repl generated files
 repl-temp-*
+
+# Tauri/Rust generated files
+src-tauri/target
+node_modules
